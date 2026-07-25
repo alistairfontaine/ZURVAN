@@ -32,13 +32,28 @@ public:
     bool deserialize_history_from_disk(const std::string& host_path);
     void display_sync_history() const;
 
+    // 🚀 Milestone 2 Core Primitives (Bare-Metal Kalman Drift Correction Filter)
+    void update_kalman_filter(float measured_offset_us, float network_jitter_variance);
+    void calculate_linear_drift_rate();
+    float predict_future_offset(uint64_t future_duration_us) const;
+
     // State Tracking Getters
     size_t get_cached_snapshot_count() const { return sync_history_cache_.size(); }
     uint64_t get_local_microseconds() const;
+    float get_estimated_offset() const { return estimated_offset_us_; }
+    float get_estimated_drift_rate() const { return estimated_drift_rate_; }
 
 private:
     std::vector<ClockSnapshot> sync_history_cache_; // High-speed RAM timeline logging array cache
+
+    // 🔒 SCALAR KALMAN FILTER STATE VARIABLES
+    float estimated_offset_us_;    // Current estimated true offset (x)
+    float estimation_error_cov_;    // State estimation error covariance (P)
+    float process_noise_q_;         // Environmental system process noise (Q)
+    float estimated_drift_rate_;   // Microseconds per second clock drift velocity (r)
+    uint64_t last_update_time_us_;  // Microsecond timestamp marker tracking the last pass (t_prev)
 };
+
 
 } // namespace Zurvan
 

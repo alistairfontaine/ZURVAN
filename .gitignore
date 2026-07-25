@@ -1,0 +1,13 @@
+# Compilation binary targets
+zurvan-vfs
+build/
+*.o
+*.out
+
+# Sovereign time-drift container extensions
+*.zvn
+
+# Transient system and text logs
+.DS_Store
+*.swp
+*.log
